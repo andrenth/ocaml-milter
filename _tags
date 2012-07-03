@@ -1,0 +1,13 @@
+# OASIS_START
+# DO NOT EDIT (digest: 52a2980b6b0fd982e32a14d75f6ec707)
+# Library milter
+"lib": include
+<lib/*.ml{,i}>: oasis_library_milter_ccopt
+"lib/milter_stubs.c": oasis_library_milter_ccopt
+<lib/milter.{cma,cmxa}>: oasis_library_milter_cclib
+"lib/libmilter.lib": oasis_library_milter_cclib
+"lib/dllmilter.dll": oasis_library_milter_cclib
+"lib/libmilter.a": oasis_library_milter_cclib
+"lib/dllmilter.so": oasis_library_milter_cclib
+<lib/milter.{cma,cmxa}>: use_libmilter
+# OASIS_STOP
