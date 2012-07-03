@@ -500,7 +500,7 @@ caml_milter_getpriv(value ctx_val)
         return Val_none;
 
     res = caml_alloc(1, 0);
-    Store_field(res, 0, caml_copy_string(data));
+    Store_field(res, 0, (value)data);
 
     CAMLreturn(res);
 }
@@ -511,9 +511,8 @@ caml_milter_setpriv(value ctx_val, value priv_val)
     CAMLparam2(ctx_val, priv_val);
     int ret;
     SMFICTX *ctx = (SMFICTX *)ctx_val;
-    void *priv = String_val(priv_val);
 
-    ret = smfi_setpriv(ctx, priv);
+    ret = smfi_setpriv(ctx, (void *)priv_val);
     if (ret == MI_FAILURE)
         milter_error("Milter.setpriv");
 

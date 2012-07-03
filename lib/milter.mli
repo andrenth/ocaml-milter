@@ -64,8 +64,8 @@ val stop : unit -> unit
 val main : unit -> unit
 
 val getsymval : context -> string -> string
-val getpriv : context -> string -> string option
-val setpriv : context -> string -> string -> unit
+val getpriv : context -> 'a option
+val setpriv : context -> 'a -> unit
 val setreply : context -> string -> string option -> string option -> unit
 val setreply : context -> string -> string option -> string list -> unit
 

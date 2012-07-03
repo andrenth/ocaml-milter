@@ -82,8 +82,8 @@ external stop : unit -> unit = "caml_milter_stop"
 external main : unit -> unit = "caml_milter_stop"
 
 external getsymval : context -> string -> string = "caml_milter_getsymval"
-external getpriv : context -> string -> string option = "caml_milter_getpriv"
-external setpriv : context -> string -> string -> unit = "caml_milter_setpriv"
+external getpriv : context -> 'a option = "caml_milter_getpriv"
+external setpriv : context -> 'a -> unit = "caml_milter_setpriv"
 external setreply : context -> string -> string option -> string option
                 -> unit = "caml_milter_setpriv"
 external setreply : context -> string -> string option -> string list
