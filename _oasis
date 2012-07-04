@@ -1,15 +1,15 @@
 OASISFormat: 0.2
-Name:        milter
+Name:        mlmilter
 Version:     0.1.0
 Synopsis:    OCaml libmilter bindings
 Authors:     Andre Nathan
 License:     BSD3
 
-Library milter
+Library mlmilter
   Path:            lib
   BuildTools:      ocamlbuild
   CompiledObject:  best
-  Modules:         Milter
-  CSources:        milter_stubs.c
+  Modules:         Mlmilter
+  CSources:        mlmilter_stubs.c
   CCLib:           -L/usr/lib/libmilter -lmilter
   CCOpt:           -Wall -Werror

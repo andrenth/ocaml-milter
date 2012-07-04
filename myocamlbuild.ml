@@ -1,5 +1,5 @@
 (* OASIS_START *)
-(* DO NOT EDIT (digest: 84a21a878f7576943e7ffc50dfa5e0a4) *)
+(* DO NOT EDIT (digest: 1a4b4a678af4052bf13cd60b1ddc9ab7) *)
 module OASISGettext = struct
 # 21 "/build/buildd/oasis-0.2.0/src/oasis/OASISGettext.ml"
   
@@ -451,16 +451,16 @@ end
 open Ocamlbuild_plugin;;
 let package_default =
   {
-     MyOCamlbuildBase.lib_ocaml = [("lib/milter", ["lib"])];
-     lib_c = [("milter", "lib", [])];
+     MyOCamlbuildBase.lib_ocaml = [("lib/mlmilter", ["lib"])];
+     lib_c = [("mlmilter", "lib", [])];
      flags =
        [
-          (["oasis_library_milter_ccopt"; "compile"],
+          (["oasis_library_mlmilter_ccopt"; "compile"],
             [
                (OASISExpr.EBool true,
                  S [A "-ccopt"; A "-Wall"; A "-ccopt"; A "-Werror"])
             ]);
-          (["oasis_library_milter_cclib"; "link"],
+          (["oasis_library_mlmilter_cclib"; "link"],
             [
                (OASISExpr.EBool true,
                  S
@@ -471,7 +471,7 @@ let package_default =
                       A "-lmilter"
                    ])
             ]);
-          (["oasis_library_milter_cclib"; "ocamlmklib"; "c"],
+          (["oasis_library_mlmilter_cclib"; "ocamlmklib"; "c"],
             [
                (OASISExpr.EBool true,
                  S [A "-L/usr/lib/libmilter"; A "-lmilter"])
