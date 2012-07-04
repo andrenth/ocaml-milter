@@ -37,7 +37,7 @@ type descriptor =
   ; flags     : flag list
   ; connect   : (context -> string -> Unix.sockaddr -> stat) option
   ; helo      : (context -> string -> stat) option
-  ; envfrom   : (context -> string list -> stat) option
+  ; envfrom   : (context -> string -> string list -> stat) option
   ; envrcpt   : (context -> string list -> stat) option
   ; header    : (context -> string -> string -> stat) option
   ; eoh       : (context -> stat) option

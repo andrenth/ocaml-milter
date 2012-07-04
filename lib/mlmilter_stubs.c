@@ -168,21 +168,24 @@ milter_envfrom(SMFICTX *ctx, char **envfrom)
     CAMLparam0();
     char **p;
     static value *closure = NULL;
-    CAMLlocal4(ret, ctx_val, envfrom_val, envfrom_tail);
+    CAMLlocal5(ret, ctx_val, envfrom_val, args_val, args_tail);
 
     ctx_val = (value)ctx;
+    /* First element: envfrom */
+    envfrom_val = caml_copy_string(*envfrom);
 
-    envfrom_tail = Val_emptylist;
-    for (p = envfrom; *p != NULL; p++) {
-        envfrom_val = caml_alloc(2, 0);
-        Store_field(envfrom_val, 0, caml_copy_string(*p));
-        Store_field(envfrom_val, 1, envfrom_tail);
-        envfrom_tail = envfrom_val;
+    /* Other elements: ESMTP arguments */
+    args_tail = Val_emptylist;
+    for (p = envfrom + 1; *p != NULL; p++) {
+        args_val = caml_alloc(2, 0);
+        Store_field(args_val, 0, caml_copy_string(*p));
+        Store_field(args_val, 1, args_tail);
+        args_tail = args_val;
     }
 
     if (closure == NULL)
         closure = caml_named_value("milter_envfrom");
-    ret = caml_callback2(*closure, ctx_val, envfrom_val);
+    ret = caml_callback3(*closure, ctx_val, envfrom_val, args_val);
 
     CAMLreturn(milter_stat_table[Int_val(ret)]);
 }
