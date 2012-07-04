@@ -89,9 +89,9 @@ external getsymval : context -> string -> string = "caml_milter_getsymval"
 external getpriv : context -> 'a option = "caml_milter_getpriv"
 external setpriv : context -> 'a -> unit = "caml_milter_setpriv"
 external setreply : context -> string -> string option -> string option
-                -> unit = "caml_milter_setpriv"
-external setreply : context -> string -> string option -> string list
-                -> unit = "caml_milter_setpriv"
+                -> unit = "caml_milter_setreply"
+external setmlreply : context -> string -> string option -> string list
+                   -> unit = "caml_milter_setmlreply"
 
 external addheader : context -> string -> string -> unit =
   "caml_milter_addheader"

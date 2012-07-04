@@ -67,7 +67,7 @@ val getsymval : context -> string -> string
 val getpriv : context -> 'a option
 val setpriv : context -> 'a -> unit
 val setreply : context -> string -> string option -> string option -> unit
-val setreply : context -> string -> string option -> string list -> unit
+val setmlreply : context -> string -> string option -> string list -> unit
 
 val addheader : context -> string -> string -> unit
 val chgheader : context -> string -> int -> string -> unit
