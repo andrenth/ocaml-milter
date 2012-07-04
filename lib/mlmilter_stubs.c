@@ -196,21 +196,24 @@ milter_envrcpt(SMFICTX *ctx, char **envrcpt)
     CAMLparam0();
     char **p;
     static value *closure = NULL;
-    CAMLlocal4(ret, ctx_val, envrcpt_val, envrcpt_tail);
+    CAMLlocal5(ret, ctx_val, envrcpt_val, args_val, args_tail);
 
     ctx_val = (value)ctx;
+    /* First element: envrcpt */
+    envrcpt_val = caml_copy_string(*envrcpt);
 
-    envrcpt_tail = Val_emptylist;
-    for (p = envrcpt; *p != NULL; p++) {
-        envrcpt_val = caml_alloc(2, 0);
-        Store_field(envrcpt_val, 0, caml_copy_string(*p));
-        Store_field(envrcpt_val, 1, envrcpt_tail);
-        envrcpt_tail = envrcpt_val;
+    /* Other elements: ESMTP arguments */
+    args_tail = Val_emptylist;
+    for (p = envrcpt + 1; *p != NULL; p++) {
+        args_val = caml_alloc(2, 0);
+        Store_field(args_val, 0, caml_copy_string(*p));
+        Store_field(args_val, 1, args_tail);
+        args_tail = args_val;
     }
 
     if (closure == NULL)
         closure = caml_named_value("milter_envrcpt");
-    ret = caml_callback2(*closure, ctx_val, envrcpt_val);
+    ret = caml_callback3(*closure, ctx_val, envrcpt_val, args_val);
 
     CAMLreturn(milter_stat_table[Int_val(ret)]);
 }
