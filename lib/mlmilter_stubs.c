@@ -782,7 +782,6 @@ caml_milter_version(value unit)
 }
 
 static const int milter_stage_table[] = {
-  SMFIM_FIRST,
   SMFIM_CONNECT,
   SMFIM_HELO,
   SMFIM_ENVFROM,

@@ -22,8 +22,7 @@ type flag
   | SETSYMLIST
 
 type stage
-  = FIRST
-  | CONNECT
+  = CONNECT
   | HELO
   | ENVFROM
   | ENVRCPT
