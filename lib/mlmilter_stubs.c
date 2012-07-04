@@ -378,6 +378,12 @@ milter_negotiate(SMFICTX *ctx,
     CAMLreturn(milter_stat_table[Int_val(ret)]);
 }
 
+static int
+isnone(value opt)
+{
+    return(opt == Val_none);
+}
+
 CAMLprim value
 caml_milter_register(value desc_val)
 {
@@ -388,19 +394,19 @@ caml_milter_register(value desc_val)
     desc.xxfi_name      = String_val(Field(desc_val, 0));
     desc.xxfi_version   = Int_val(Field(desc_val, 1));
     desc.xxfi_flags     = milter_flags(Field(desc_val, 2));
-    desc.xxfi_connect   = milter_connect;
-    desc.xxfi_helo      = milter_helo;
-    desc.xxfi_envfrom   = milter_envfrom;
-    desc.xxfi_envrcpt   = milter_envrcpt;
-    desc.xxfi_header    = milter_header;
-    desc.xxfi_eoh       = milter_eoh;
-    desc.xxfi_body      = milter_body;
-    desc.xxfi_eom       = milter_eom;
-    desc.xxfi_abort     = milter_abort;
-    desc.xxfi_close     = milter_close;
-    desc.xxfi_unknown   = milter_unknown;
-    desc.xxfi_data      = milter_data;
-    desc.xxfi_negotiate = milter_negotiate;
+    desc.xxfi_connect   = isnone(Field(desc_val,  3)) ? NULL : milter_connect;
+    desc.xxfi_helo      = isnone(Field(desc_val,  4)) ? NULL : milter_helo;
+    desc.xxfi_envfrom   = isnone(Field(desc_val,  5)) ? NULL : milter_envfrom;
+    desc.xxfi_envrcpt   = isnone(Field(desc_val,  6)) ? NULL : milter_envrcpt;
+    desc.xxfi_header    = isnone(Field(desc_val,  7)) ? NULL : milter_header;
+    desc.xxfi_eoh       = isnone(Field(desc_val,  8)) ? NULL : milter_eoh;
+    desc.xxfi_body      = isnone(Field(desc_val,  9)) ? NULL : milter_body;
+    desc.xxfi_eom       = isnone(Field(desc_val, 10)) ? NULL : milter_eom;
+    desc.xxfi_abort     = isnone(Field(desc_val, 11)) ? NULL : milter_abort;
+    desc.xxfi_close     = isnone(Field(desc_val, 12)) ? NULL : milter_close;
+    desc.xxfi_unknown   = isnone(Field(desc_val, 13)) ? NULL : milter_unknown;
+    desc.xxfi_data      = isnone(Field(desc_val, 14)) ? NULL : milter_data;
+    desc.xxfi_negotiate = isnone(Field(desc_val, 15)) ? NULL : milter_negotiate;
 
     ret = smfi_register(desc);
     if (ret == MI_FAILURE)

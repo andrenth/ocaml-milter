@@ -35,20 +35,20 @@ type descriptor =
   { name      : string
   ; version   : int
   ; flags     : flag list
-  ; connect   : (context -> string -> Unix.sockaddr -> stat)
-  ; helo      : (context -> string -> stat)
-  ; envfrom   : (context -> string list -> stat)
-  ; envrcpt   : (context -> string list -> stat)
-  ; header    : (context -> string -> string -> stat)
-  ; eoh       : (context -> stat)
-  ; body      : (context -> string -> int -> stat)
-  ; eom       : (context -> stat)
-  ; abort     : (context -> stat)
-  ; close     : (context -> stat)
-  ; unknown   : (context -> string -> stat)
-  ; data      : (context -> stat)
+  ; connect   : (context -> string -> Unix.sockaddr -> stat) option
+  ; helo      : (context -> string -> stat) option
+  ; envfrom   : (context -> string list -> stat) option
+  ; envrcpt   : (context -> string list -> stat) option
+  ; header    : (context -> string -> string -> stat) option
+  ; eoh       : (context -> stat) option
+  ; body      : (context -> string -> int -> stat) option
+  ; eom       : (context -> stat) option
+  ; abort     : (context -> stat) option
+  ; close     : (context -> stat) option
+  ; unknown   : (context -> string -> stat) option
+  ; data      : (context -> stat) option
   ; negotiate : (context -> int -> int -> int -> int
-                  -> stat * int * int * int * int)
+                  -> stat * int * int * int * int) option
   }
 
 type bytes =

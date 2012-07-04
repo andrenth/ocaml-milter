@@ -35,20 +35,20 @@ type descriptor =
   { name      : string
   ; version   : int
   ; flags     : flag list
-  ; connect   : (context -> string -> Unix.sockaddr -> stat)
-  ; helo      : (context -> string -> stat)
-  ; envfrom   : (context -> string list -> stat)
-  ; envrcpt   : (context -> string list -> stat)
-  ; header    : (context -> string -> string -> stat)
-  ; eoh       : (context -> stat)
-  ; body      : (context -> string -> int -> stat)
-  ; eom       : (context -> stat)
-  ; abort     : (context -> stat)
-  ; close     : (context -> stat)
-  ; unknown   : (context -> string -> stat)
-  ; data      : (context -> stat)
+  ; connect   : (context -> string -> Unix.sockaddr -> stat) option
+  ; helo      : (context -> string -> stat) option
+  ; envfrom   : (context -> string list -> stat) option
+  ; envrcpt   : (context -> string list -> stat) option
+  ; header    : (context -> string -> string -> stat) option
+  ; eoh       : (context -> stat) option
+  ; body      : (context -> string -> int -> stat) option
+  ; eom       : (context -> stat) option
+  ; abort     : (context -> stat) option
+  ; close     : (context -> stat) option
+  ; unknown   : (context -> string -> stat) option
+  ; data      : (context -> stat) option
   ; negotiate : (context -> int -> int -> int -> int
-                  -> stat * int * int * int * int)
+                  -> stat * int * int * int * int) option
   }
 
 type bytes =
@@ -58,20 +58,24 @@ external opensocket : bool -> unit = "caml_milter_opensocket"
 
 external milter_register : descriptor -> unit = "caml_milter_register"
 
+let maybe f = function
+  | None -> ()
+  | Some x -> f x
+
 let register descr =
-  Callback.register "milter_connect" descr.connect;
-  Callback.register "milter_helo" descr.helo;
-  Callback.register "milter_envfrom" descr.envfrom;
-  Callback.register "milter_envrcpt" descr.envrcpt;
-  Callback.register "milter_header" descr.header;
-  Callback.register "milter_eoh" descr.eoh;
-  Callback.register "milter_body" descr.body;
-  Callback.register "milter_eom" descr.eom;
-  Callback.register "milter_abort" descr.abort;
-  Callback.register "milter_close" descr.close;
-  Callback.register "milter_unknown" descr.unknown;
-  Callback.register "milter_data" descr.data;
-  Callback.register "milter_negotiate" descr.negotiate;
+  maybe (Callback.register "milter_connect") descr.connect;
+  maybe (Callback.register "milter_helo") descr.helo;
+  maybe (Callback.register "milter_envfrom") descr.envfrom;
+  maybe (Callback.register "milter_envrcpt") descr.envrcpt;
+  maybe (Callback.register "milter_header") descr.header;
+  maybe (Callback.register "milter_eoh") descr.eoh;
+  maybe (Callback.register "milter_body") descr.body;
+  maybe (Callback.register "milter_eom") descr.eom;
+  maybe (Callback.register "milter_abort") descr.abort;
+  maybe (Callback.register "milter_close") descr.close;
+  maybe (Callback.register "milter_unknown") descr.unknown;
+  maybe (Callback.register "milter_data") descr.data;
+  maybe (Callback.register "milter_negotiate") descr.negotiate;
   milter_register descr
 
 external setconn : string -> unit = "caml_milter_setconn"
