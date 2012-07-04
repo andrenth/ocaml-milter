@@ -1,0 +1,7 @@
+name = "milter"
+version = "0.1.0"
+description = "OCaml bindings to libmilter"
+requires = "bigarray"
+archive(byte) = "milter.cma"
+archive(native) = "milter.cmxa"
+linkopts = ""
