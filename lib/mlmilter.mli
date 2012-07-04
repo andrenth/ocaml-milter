@@ -81,3 +81,5 @@ val progress : context -> unit
 val quarantine : context -> string -> unit
 val version : unit -> int * int * int
 val setsymlist : context -> stage -> string -> unit
+
+val version_code : int

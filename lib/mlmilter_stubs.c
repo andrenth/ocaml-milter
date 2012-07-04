@@ -786,7 +786,6 @@ static const int milter_stage_table[] = {
   SMFIM_EOH,
 };
 
-
 CAMLprim value
 caml_milter_setsymlist(value ctx_val, value stage_val, value macros_val)
 {
@@ -801,4 +800,11 @@ caml_milter_setsymlist(value ctx_val, value stage_val, value macros_val)
         milter_error("Milter.setsymlist");
 
     CAMLreturn(Val_unit);
+}
+
+CAMLprim value
+caml_milter_version_code(value unit)
+{
+    CAMLparam1(unit);
+    CAMLreturn(Val_int(SMFI_VERSION));
 }

@@ -117,3 +117,8 @@ external version : unit -> int * int * int =
   "caml_milter_version"
 external setsymlist : context -> stage -> string -> unit =
   "caml_milter_setsymlist"
+
+external milter_version_code : unit -> int = "caml_milter_version_code"
+
+let version_code =
+  milter_version_code ()
