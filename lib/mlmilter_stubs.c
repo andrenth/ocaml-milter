@@ -153,7 +153,13 @@ milter_helo(SMFICTX *ctx, char *helo)
     CAMLlocal3(ret, ctx_val, helo_val);
 
     ctx_val = (value)ctx;
-    helo_val = caml_copy_string(helo);
+
+    if (helo == NULL) {
+        helo_val = Val_none;
+    } else {
+        helo_val = caml_alloc(1, 0);
+        Store_field(helo_val, 0, caml_copy_string(helo));
+    }
 
     if (closure == NULL)
         closure = caml_named_value("milter_helo");
