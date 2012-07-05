@@ -488,15 +488,18 @@ CAMLprim value
 caml_milter_getsymval(value ctx_val, value sym_val)
 {
     CAMLparam2(ctx_val, sym_val);
+    CAMLlocal1(res);
     char *val;
     char *sym = String_val(sym_val);
     SMFICTX *ctx = (SMFICTX *)ctx_val;
 
     val = smfi_getsymval(ctx, sym);
     if (val == NULL)
-        milter_error("Milter.getsymval");
+        return Val_none;
 
-    CAMLreturn(caml_copy_string(val));
+    res = caml_alloc(1, 0);
+    Store_field(res, 0, caml_copy_string(val));
+    CAMLreturn(res);
 }
 
 CAMLprim value

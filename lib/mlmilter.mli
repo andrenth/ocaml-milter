@@ -62,7 +62,7 @@ val setdbg : int -> unit
 val stop : unit -> unit
 val main : unit -> unit
 
-val getsymval : context -> string -> string
+val getsymval : context -> string -> string option
 val getpriv : context -> 'a option
 val setpriv : context -> 'a -> unit
 val setreply : context -> string -> string option -> string option -> unit
