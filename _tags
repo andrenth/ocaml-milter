@@ -1,13 +1,26 @@
 # OASIS_START
-# DO NOT EDIT (digest: 7f9f760cac13b684156e31792c8fc95e)
-# Library mlmilter
-"lib": include
-<lib/*.ml{,i}>: oasis_library_mlmilter_ccopt
-"lib/mlmilter_stubs.c": oasis_library_mlmilter_ccopt
-<lib/mlmilter.{cma,cmxa}>: oasis_library_mlmilter_cclib
-"lib/libmlmilter.lib": oasis_library_mlmilter_cclib
-"lib/dllmlmilter.dll": oasis_library_mlmilter_cclib
-"lib/libmlmilter.a": oasis_library_mlmilter_cclib
-"lib/dllmlmilter.so": oasis_library_mlmilter_cclib
-<lib/mlmilter.{cma,cmxa}>: use_libmlmilter
+# DO NOT EDIT (digest: b63aa77ad45a4a689fb696538f142f2f)
+# Ignore VCS directories, you can use the same kind of rule outside 
+# OASIS_START/STOP if you want to exclude directories that contains 
+# useless stuff for the build process
+<**/.svn>: -traverse
+<**/.svn>: not_hygienic
+".bzr": -traverse
+".bzr": not_hygienic
+".hg": -traverse
+".hg": not_hygienic
+".git": -traverse
+".git": not_hygienic
+"_darcs": -traverse
+"_darcs": not_hygienic
+# Library milter
+"lib/milter.cmxs": use_milter
+<lib/*.ml{,i}>: oasis_library_milter_ccopt
+"lib/milter_stubs.c": oasis_library_milter_ccopt
+<lib/milter.{cma,cmxa}>: oasis_library_milter_cclib
+"lib/libmilter_stubs.lib": oasis_library_milter_cclib
+"lib/dllmilter_stubs.dll": oasis_library_milter_cclib
+"lib/libmilter_stubs.a": oasis_library_milter_cclib
+"lib/dllmilter_stubs.so": oasis_library_milter_cclib
+<lib/milter.{cma,cmxa}>: use_libmilter_stubs
 # OASIS_STOP
