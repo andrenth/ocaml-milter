@@ -107,14 +107,14 @@ make_sockaddr(_SOCK_ADDR *sa)
     }
     case AF_INET: {
         struct sockaddr_in *sin = (struct sockaddr_in *)sa;
-        res = caml_alloc(2, 0);
+        res = caml_alloc(2, 1);
         Store_field(res, 0, alloc_ip(&sin->sin_addr, 4));
         Store_field(res, 1, Val_int(ntohs(sin->sin_port)));
         break;
     }
     case AF_INET6: {
         struct sockaddr_in6 *sin6 = (struct sockaddr_in6 *)sa;
-        res = caml_alloc(2, 0);
+        res = caml_alloc(2, 1);
         Store_field(res, 0, alloc_ip(&sin6->sin6_addr, 16));
         Store_field(res, 1, Val_int(ntohs(sin6->sin6_port)));
         break;
