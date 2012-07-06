@@ -53,6 +53,8 @@ type descriptor =
 type bytes =
   (char, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
+exception Milter_error of string
+
 val opensocket : bool -> unit
 val register : descriptor -> unit
 val setconn : string -> unit

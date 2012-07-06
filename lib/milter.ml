@@ -53,6 +53,10 @@ type descriptor =
 type bytes =
   (char, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
+exception Milter_error of string
+
+let _ = Callback.register_exception "Milter.Milter_error" (Milter_error "")
+
 external opensocket : bool -> unit = "caml_milter_opensocket"
 
 external milter_register : descriptor -> unit = "caml_milter_register"
