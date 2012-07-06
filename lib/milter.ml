@@ -82,7 +82,7 @@ external settimeout : int -> unit = "caml_milter_settimeout"
 external setbacklog : int -> unit = "caml_milter_setbacklog"
 external setdbg : int -> unit = "caml_milter_setdbg"
 external stop : unit -> unit = "caml_milter_stop"
-external main : unit -> unit = "caml_milter_stop"
+external main : unit -> unit = "caml_milter_main"
 
 external getsymval : context -> string -> string option =
   "caml_milter_getsymval"
