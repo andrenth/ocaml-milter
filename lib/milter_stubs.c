@@ -358,6 +358,32 @@ milter_data(SMFICTX *ctx)
     CAMLreturn(milter_stat_table[Int_val(ret)]);
 }
 
+static const int milter_step_table[] = {
+    SMFIP_NOCONNECT,
+    SMFIP_NOHELO,
+    SMFIP_NOMAIL,
+    SMFIP_NORCPT,
+    SMFIP_NOBODY,
+    SMFIP_NOHDRS,
+    SMFIP_NOEOH,
+    SMFIP_NR_HDR,
+    SMFIP_NOUNKNOWN,
+    SMFIP_NODATA,
+    SMFIP_SKIP,
+    SMFIP_RCPT_REJ,
+    SMFIP_NR_CONN,
+    SMFIP_NR_HELO,
+    SMFIP_NR_MAIL,
+    SMFIP_NR_RCPT,
+    SMFIP_NR_DATA,
+    SMFIP_NR_UNKN,
+    SMFIP_NR_EOH,
+    SMFIP_NR_BODY,
+    SMFIP_HDR_LEADSPC,
+    SMFIP_MDS_256K,
+    SMFIP_MDS_1M,
+};
+
 static sfsistat
 milter_negotiate(SMFICTX *ctx,
                  unsigned long f0, unsigned long f1,
@@ -366,28 +392,63 @@ milter_negotiate(SMFICTX *ctx,
                  unsigned long *pf2, unsigned long *pf3)
 {
     CAMLparam0();
+    size_t i, len;
     static value *closure = NULL;
-    CAMLlocal1(ret);
-    CAMLlocal4(f0_val, f2_val, f1_val, f3_val);
-    CAMLlocal4(pf0_val, pf2_val, pf1_val, pf3_val);
+    CAMLlocal3(ret, ctx_val, head);
+    CAMLlocal2(actions_val, actions_tail);
+    CAMLlocal2(steps_val, steps_tail);
     CAMLlocalN(args, 5);
 
-    args[0] = (value)ctx;
-    args[1] = Val_int(f0);
-    args[2] = Val_int(f1);
-    args[3] = Val_int(f2);
-    args[4] = Val_int(f3);
+    ctx_val = (value)ctx;
+
+
+    len = sizeof(milter_flag_table)/sizeof(milter_flag_table[0]);
+    actions_tail = Val_emptylist;
+    for (i = 0; i < len; i++) {
+        if (f0 & milter_flag_table[i]) {
+            actions_val = caml_alloc(2, 0);
+            Store_field(actions_val, 0, Val_int(i));
+            Store_field(actions_val, 1, actions_tail);
+            actions_tail = actions_val;
+        }
+    }
+
+    len = sizeof(milter_step_table)/sizeof(milter_step_table[0]);
+    steps_tail = Val_emptylist;
+    for (i = 0; i < len; i++) {
+        if (f1 & milter_step_table[i]) {
+            steps_val = caml_alloc(2, 0);
+            Store_field(steps_val, 0, Val_int(i));
+            Store_field(steps_val, 1, steps_tail);
+            steps_tail = steps_val;
+        }
+    }
 
     if (closure == NULL)
         closure = caml_named_value("milter_negotiate");
-    ret = caml_callbackN(*closure, 5, args);
+    ret = caml_callback3(*closure, ctx_val, actions_val, steps_val);
 
-    *pf0 = Long_val(Field(ret, 1));
-    *pf1 = Long_val(Field(ret, 2));
-    *pf2 = Long_val(Field(ret, 3));
-    *pf3 = Long_val(Field(ret, 4));
+    actions_val = Field(ret, 1);
+    steps_val = Field(ret, 2);
 
-    CAMLreturn(milter_stat_table[Int_val(ret)]);
+    *pf0 = 0;
+    while (actions_val != Val_emptylist) {
+        head = Field(actions_val, 0);
+        *pf0 |= milter_flag_table[Int_val(head)];
+        actions_val = Field(actions_val, 1);
+    }
+
+    *pf1 = 0;
+    while (steps_val != Val_emptylist) {
+        head = Field(steps_val, 0);
+        *pf1 |= milter_step_table[Int_val(head)];
+        steps_val = Field(steps_val, 1);
+    }
+
+    *pf2 = 0;
+    *pf3 = 0;
+
+    CAMLreturn(milter_stat_table[Int_val(Field(ret, 0))]);
 }
 
 static int

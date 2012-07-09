@@ -30,6 +30,31 @@ type stage
   | EOM
   | EOH
 
+type step
+  = NOCONNECT
+  | NOHELO
+  | NOMAIL
+  | NORCPT
+  | NOBODY
+  | NOHDRS
+  | NOEOH
+  | NR_HDR
+  | NOUNKNOWN
+  | NODATA
+  | SKIP
+  | RCPT_REJ
+  | NR_CONN
+  | NR_HELO
+  | NR_MAIL
+  | NR_RCPT
+  | NR_DATA
+  | NR_UNKN
+  | NR_EOH
+  | NR_BODY
+  | HDR_LEADSPC
+  | MDS_256K
+  | MDS_1M
+
 type descriptor =
   { name      : string
   ; version   : int
@@ -46,8 +71,8 @@ type descriptor =
   ; close     : (context -> stat) option
   ; unknown   : (context -> string -> stat) option
   ; data      : (context -> stat) option
-  ; negotiate : (context -> int -> int -> int -> int
-                  -> stat * int * int * int * int) option
+  ; negotiate : (context -> flag list -> step list
+                  -> stat * flag list * step list) option
   }
 
 type bytes =
