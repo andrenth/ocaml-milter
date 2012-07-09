@@ -1,4 +1,4 @@
-type context
+type ctx
 
 type stat
   = Continue
@@ -59,19 +59,19 @@ type descriptor =
   { name      : string
   ; version   : int
   ; flags     : flag list
-  ; connect   : (context -> string option -> Unix.sockaddr option -> stat) option
-  ; helo      : (context -> string option -> stat) option
-  ; envfrom   : (context -> string -> string list -> stat) option
-  ; envrcpt   : (context -> string -> string list -> stat) option
-  ; header    : (context -> string -> string -> stat) option
-  ; eoh       : (context -> stat) option
-  ; body      : (context -> string -> int -> stat) option
-  ; eom       : (context -> stat) option
-  ; abort     : (context -> stat) option
-  ; close     : (context -> stat) option
-  ; unknown   : (context -> string -> stat) option
-  ; data      : (context -> stat) option
-  ; negotiate : (context -> flag list -> step list
+  ; connect   : (ctx -> string option -> Unix.sockaddr option -> stat) option
+  ; helo      : (ctx -> string option -> stat) option
+  ; envfrom   : (ctx -> string -> string list -> stat) option
+  ; envrcpt   : (ctx -> string -> string list -> stat) option
+  ; header    : (ctx -> string -> string -> stat) option
+  ; eoh       : (ctx -> stat) option
+  ; body      : (ctx -> string -> int -> stat) option
+  ; eom       : (ctx -> stat) option
+  ; abort     : (ctx -> stat) option
+  ; close     : (ctx -> stat) option
+  ; unknown   : (ctx -> string -> stat) option
+  ; data      : (ctx -> stat) option
+  ; negotiate : (ctx -> flag list -> step list
                   -> stat * flag list * step list) option
   }
 
@@ -113,40 +113,40 @@ external setdbg : int -> unit = "caml_milter_setdbg"
 external stop : unit -> unit = "caml_milter_stop"
 external main : unit -> unit = "caml_milter_main"
 
-external getsymval : context -> string -> string option =
+external getsymval : ctx -> string -> string option =
   "caml_milter_getsymval"
-external getpriv : context -> 'a option =
+external getpriv : ctx -> 'a option =
   "caml_milter_getpriv"
-external setpriv : context -> 'a -> unit =
+external setpriv : ctx -> 'a -> unit =
   "caml_milter_setpriv"
-external setreply : context -> string -> string option -> string option
-                -> unit = "caml_milter_setreply"
-external setmlreply : context -> string -> string option -> string list
-                   -> unit = "caml_milter_setmlreply"
+external setreply : ctx -> string -> string option -> string option -> unit =
+  "caml_milter_setreply"
+external setmlreply : ctx -> string -> string option -> string list -> unit =
+  "caml_milter_setmlreply"
 
-external addheader : context -> string -> string -> unit =
+external addheader : ctx -> string -> string -> unit =
   "caml_milter_addheader"
-external chgheader : context -> string -> int -> string -> unit =
+external chgheader : ctx -> string -> int -> string -> unit =
   "caml_milter_chgheader"
-external insheader : context -> int -> string -> string -> unit =
+external insheader : ctx -> int -> string -> string -> unit =
   "caml_milter_insheader"
-external chgfrom : context -> string -> string -> unit =
+external chgfrom : ctx -> string -> string -> unit =
   "caml_milter_chgfrom"
-external addrcpt : context -> string -> unit =
+external addrcpt : ctx -> string -> unit =
   "caml_milter_addrcpt"
-external addrcpt_par : context -> string -> string -> unit =
+external addrcpt_par : ctx -> string -> string -> unit =
   "caml_milter_addrcpt_par"
-external delrcpt : context -> string -> unit =
+external delrcpt : ctx -> string -> unit =
   "caml_milter_delrcpt"
-external replacebody : context -> bytes -> unit =
+external replacebody : ctx -> bytes -> unit =
   "caml_milter_replacebody"
-external progress : context -> unit =
+external progress : ctx -> unit =
   "caml_milter_progress"
-external quarantine : context -> string -> unit =
+external quarantine : ctx -> string -> unit =
   "caml_milter_quarantine"
 external version : unit -> int * int * int =
   "caml_milter_version"
-external setsymlist : context -> stage -> string -> unit =
+external setsymlist : ctx -> stage -> string -> unit =
   "caml_milter_setsymlist"
 
 external milter_version_code : unit -> int = "caml_milter_version_code"

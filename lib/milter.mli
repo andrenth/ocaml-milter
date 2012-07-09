@@ -1,4 +1,4 @@
-type context
+type ctx
 
 type stat
   = Continue
@@ -59,19 +59,19 @@ type descriptor =
   { name      : string
   ; version   : int
   ; flags     : flag list
-  ; connect   : (context -> string option -> Unix.sockaddr option -> stat) option
-  ; helo      : (context -> string option -> stat) option
-  ; envfrom   : (context -> string -> string list -> stat) option
-  ; envrcpt   : (context -> string -> string list -> stat) option
-  ; header    : (context -> string -> string -> stat) option
-  ; eoh       : (context -> stat) option
-  ; body      : (context -> string -> int -> stat) option
-  ; eom       : (context -> stat) option
-  ; abort     : (context -> stat) option
-  ; close     : (context -> stat) option
-  ; unknown   : (context -> string -> stat) option
-  ; data      : (context -> stat) option
-  ; negotiate : (context -> flag list -> step list
+  ; connect   : (ctx -> string option -> Unix.sockaddr option -> stat) option
+  ; helo      : (ctx -> string option -> stat) option
+  ; envfrom   : (ctx -> string -> string list -> stat) option
+  ; envrcpt   : (ctx -> string -> string list -> stat) option
+  ; header    : (ctx -> string -> string -> stat) option
+  ; eoh       : (ctx -> stat) option
+  ; body      : (ctx -> string -> int -> stat) option
+  ; eom       : (ctx -> stat) option
+  ; abort     : (ctx -> stat) option
+  ; close     : (ctx -> stat) option
+  ; unknown   : (ctx -> string -> stat) option
+  ; data      : (ctx -> stat) option
+  ; negotiate : (ctx -> flag list -> step list
                   -> stat * flag list * step list) option
   }
 
@@ -89,23 +89,23 @@ val setdbg : int -> unit
 val stop : unit -> unit
 val main : unit -> unit
 
-val getsymval : context -> string -> string option
-val getpriv : context -> 'a option
-val setpriv : context -> 'a -> unit
-val setreply : context -> string -> string option -> string option -> unit
-val setmlreply : context -> string -> string option -> string list -> unit
+val getsymval : ctx -> string -> string option
+val getpriv : ctx -> 'a option
+val setpriv : ctx -> 'a -> unit
+val setreply : ctx -> string -> string option -> string option -> unit
+val setmlreply : ctx -> string -> string option -> string list -> unit
 
-val addheader : context -> string -> string -> unit
-val chgheader : context -> string -> int -> string -> unit
-val insheader : context -> int -> string -> string -> unit
-val chgfrom : context -> string -> string -> unit
-val addrcpt : context -> string -> unit
-val addrcpt_par : context -> string -> string -> unit
-val delrcpt : context -> string -> unit
-val replacebody : context -> bytes -> unit
-val progress : context -> unit
-val quarantine : context -> string -> unit
+val addheader : ctx -> string -> string -> unit
+val chgheader : ctx -> string -> int -> string -> unit
+val insheader : ctx -> int -> string -> string -> unit
+val chgfrom : ctx -> string -> string -> unit
+val addrcpt : ctx -> string -> unit
+val addrcpt_par : ctx -> string -> string -> unit
+val delrcpt : ctx -> string -> unit
+val replacebody : ctx -> bytes -> unit
+val progress : ctx -> unit
+val quarantine : ctx -> string -> unit
 val version : unit -> int * int * int
-val setsymlist : context -> stage -> string -> unit
+val setsymlist : ctx -> stage -> string -> unit
 
 val version_code : int
