@@ -11,7 +11,7 @@ type stat
   | All
 
 type flag
-  = ADDHRDS
+  = ADDHDRS
   | CHGHDRS
   | CHGBODY
   | ADDRCPT
