@@ -21,6 +21,18 @@
 #define Some_val(v)    Field(v, 0)
 #define Val_none       Val_int(0)
 
+static CAMLprim value
+Val_some(value v)
+{
+    CAMLparam1(v);
+    CAMLlocal1(r);
+
+    r = caml_alloc(1, 0);
+    Store_field(r, 0, v);
+
+    CAMLreturn(r);
+}
+
 static void
 milter_error(const char *err)
 {
@@ -135,8 +147,9 @@ milter_connect(SMFICTX *ctx, char *host, _SOCK_ADDR *sockaddr)
     CAMLlocal5(ret, ctx_val, context_val, host_val, sockaddr_val);
 
     ctx_val = (value)ctx;
-    host_val = caml_copy_string(host);
-    sockaddr_val = make_sockaddr(sockaddr);
+
+    host_val = host ? Val_some(caml_copy_string(host)) : Val_none;
+    sockaddr_val = sockaddr ? Val_some(make_sockaddr(sockaddr)) : Val_none;
 
     if (closure == NULL)
         closure = caml_named_value("milter_connect");
@@ -154,12 +167,7 @@ milter_helo(SMFICTX *ctx, char *helo)
 
     ctx_val = (value)ctx;
 
-    if (helo == NULL) {
-        helo_val = Val_none;
-    } else {
-        helo_val = caml_alloc(1, 0);
-        Store_field(helo_val, 0, caml_copy_string(helo));
-    }
+    helo_val = helo ? Val_some(caml_copy_string(helo)) : Val_none;
 
     if (closure == NULL)
         closure = caml_named_value("milter_helo");

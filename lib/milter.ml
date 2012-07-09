@@ -59,7 +59,7 @@ type descriptor =
   { name      : string
   ; version   : int
   ; flags     : flag list
-  ; connect   : (context -> string -> Unix.sockaddr -> stat) option
+  ; connect   : (context -> string option -> Unix.sockaddr option -> stat) option
   ; helo      : (context -> string option -> stat) option
   ; envfrom   : (context -> string -> string list -> stat) option
   ; envrcpt   : (context -> string -> string list -> stat) option
