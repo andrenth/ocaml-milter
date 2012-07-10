@@ -610,6 +610,17 @@ caml_milter_setpriv(value ctx_val, value priv_val)
 }
 
 CAMLprim value
+caml_milter_unsetpriv(value ctx_val)
+{
+    CAMLparam1(ctx_val);
+    SMFICTX *ctx = (SMFICTX *)ctx_val;
+
+    smfi_setpriv(ctx, NULL);
+
+    CAMLreturn(Val_unit);
+}
+
+CAMLprim value
 caml_milter_setreply(value ctx_val, value rcode_val, value xcode_val,
                      value msg_val)
 {
