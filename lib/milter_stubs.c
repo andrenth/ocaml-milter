@@ -871,13 +871,13 @@ caml_milter_version(value unit)
 }
 
 static const int milter_stage_table[] = {
-  SMFIM_CONNECT,
-  SMFIM_HELO,
-  SMFIM_ENVFROM,
-  SMFIM_ENVRCPT,
-  SMFIM_DATA,
-  SMFIM_EOM,
-  SMFIM_EOH,
+    SMFIM_CONNECT,
+    SMFIM_HELO,
+    SMFIM_ENVFROM,
+    SMFIM_ENVRCPT,
+    SMFIM_DATA,
+    SMFIM_EOM,
+    SMFIM_EOH,
 };
 
 CAMLprim value
