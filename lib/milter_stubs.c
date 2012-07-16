@@ -388,8 +388,16 @@ static const int milter_step_table[] = {
     SMFIP_NR_EOH,
     SMFIP_NR_BODY,
     SMFIP_HDR_LEADSPC,
+#ifdef SMFIP_MDS_256K
     SMFIP_MDS_256K,
+#else
+    0,
+#endif
+#ifdef SMFIP_MDS_1M
     SMFIP_MDS_1M,
+#else
+    0,
+#endif
 };
 
 static sfsistat
