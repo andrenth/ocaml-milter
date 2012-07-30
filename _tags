@@ -24,3 +24,5 @@
 "lib/dllmilter_stubs.so": oasis_library_milter_cclib
 <lib/milter.{cma,cmxa}>: use_libmilter_stubs
 # OASIS_STOP
+<*/*.ml>: annot
+<*/*.ml>: warn_error_A
