@@ -727,7 +727,7 @@ caml_milter_chgheader(value ctx_val,
     int32_t idx = Int_val(idx_val);
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     char *headerf = String_val(headerf_val);
-    char *headerv = String_val(headerv_val);
+    char *headerv = isnone(headerv_val) ? NULL : String_val(headerv_val);
 
     ret = smfi_chgheader(ctx, headerf, idx, headerv);
     if (ret == MI_FAILURE)

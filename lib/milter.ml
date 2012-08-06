@@ -128,7 +128,7 @@ external setmlreply : ctx -> string -> string option -> string list -> unit =
 
 external addheader : ctx -> string -> string -> unit =
   "caml_milter_addheader"
-external chgheader : ctx -> string -> int -> string -> unit =
+external chgheader : ctx -> string -> int -> string option -> unit =
   "caml_milter_chgheader"
 external insheader : ctx -> int -> string -> string -> unit =
   "caml_milter_insheader"
