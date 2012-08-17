@@ -9,6 +9,7 @@ Library milter
   Path:            lib
   BuildTools:      ocamlbuild
   CompiledObject:  best
+  BuildDepends:    threads
   Modules:         Milter
   CSources:        milter_stubs.c
   CCLib:           -L/usr/lib/libmilter -lmilter

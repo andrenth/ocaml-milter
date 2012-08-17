@@ -1,3 +1,5 @@
+let _ = Thread.self ()
+
 type ctx
 
 type stat

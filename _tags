@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: b63aa77ad45a4a689fb696538f142f2f)
+# DO NOT EDIT (digest: 8bb79ad1bb55e1f7f506eef8ca3ae2fe)
 # Ignore VCS directories, you can use the same kind of rule outside 
 # OASIS_START/STOP if you want to exclude directories that contains 
 # useless stuff for the build process
@@ -23,6 +23,8 @@
 "lib/libmilter_stubs.a": oasis_library_milter_cclib
 "lib/dllmilter_stubs.so": oasis_library_milter_cclib
 <lib/milter.{cma,cmxa}>: use_libmilter_stubs
+<lib/*.ml{,i}>: pkg_threads
+"lib/milter_stubs.c": pkg_threads
 # OASIS_STOP
 <*/*.ml>: annot
 <*/*.ml>: warn_error_A
