@@ -627,6 +627,7 @@ caml_milter_main(value unit)
 
     caml_release_runtime_system();
     ret = smfi_main();
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.main");
 
