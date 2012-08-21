@@ -22,15 +22,17 @@
 #define Some_val(v)    Field(v, 0)
 #define Val_none       Val_int(0)
 
-#define ENTER_CALLBACK                                              \
-    int __caml_c_thread_registered = caml_c_thread_register();      \
-    if (__caml_c_thread_registered) caml_acquire_runtime_system();
+#define ENTER_CALLBACK                 \
+    do {                               \
+        caml_c_thread_register();      \
+        caml_acquire_runtime_system(); \
+    } while (0)
 
-#define LEAVE_CALLBACK                  \
-    if (__caml_c_thread_registered) {   \
-        caml_release_runtime_system();  \
-        caml_c_thread_unregister();     \
-    }
+#define LEAVE_CALLBACK                 \
+    do {                               \
+        caml_release_runtime_system(); \
+        caml_c_thread_unregister();    \
+    } while (0)
 
 static CAMLprim value
 Val_some(value v)
@@ -155,59 +157,82 @@ make_sockaddr(_SOCK_ADDR *sa)
 static sfsistat
 milter_connect(SMFICTX *ctx, char *host, _SOCK_ADDR *sockaddr)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal5(ret, ctx_val, context_val, host_val, sockaddr_val);
+    value ret, ctx_val, host_val, sockaddr_val;
     sfsistat s;
     static value *closure = NULL;
 
-    ctx_val = (value)ctx;
+    ENTER_CALLBACK;
 
-    host_val = host ? Val_some(caml_copy_string(host)) : Val_none;
-    sockaddr_val = sockaddr ? Val_some(make_sockaddr(sockaddr)) : Val_none;
+    ret = Val_none;
+    ctx_val = (value)ctx;
+    host_val = Val_none;
+    sockaddr_val = Val_none;
+
+    Begin_roots4(ret, ctx_val, host_val, sockaddr_val);
+
+    if (host != NULL)
+        host_val = Val_some(caml_copy_string(host));
+
+    if (sockaddr != NULL)
+        sockaddr_val = Val_some(make_sockaddr(sockaddr));
 
     if (closure == NULL)
         closure = caml_named_value("milter_connect");
     ret = caml_callback3(*closure, ctx_val, host_val, sockaddr_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_helo(SMFICTX *ctx, char *helo)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal3(ret, ctx_val, helo_val);
+    value ret, ctx_val, helo_val;
     static value *closure = NULL;
     sfsistat s;
 
-    ctx_val = (value)ctx;
+    ENTER_CALLBACK;
 
-    helo_val = helo ? Val_some(caml_copy_string(helo)) : Val_none;
+    ret = Val_none;
+    ctx_val = (value)ctx;
+    helo_val = Val_none;
+
+    Begin_roots3(ret, ctx_val, helo_val);
+
+    if (helo != NULL)
+        helo_val = Val_some(caml_copy_string(helo));
 
     if (closure == NULL)
         closure = caml_named_value("milter_helo");
     ret = caml_callback2(*closure, ctx_val, helo_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_envfrom(SMFICTX *ctx, char **envfrom)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal5(ret, ctx_val, envfrom_val, args_val, args_tail);
+    value ret, ctx_val, envfrom_val, args_val, args_tail;
     char **p;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = envfrom_val = args_val = args_tail = Val_none;
+
+    Begin_roots5(ret, ctx_val, envfrom_val, args_val, args_tail);
+
     /* First element: envfrom */
     envfrom_val = caml_copy_string(*envfrom);
 
@@ -225,21 +250,28 @@ milter_envfrom(SMFICTX *ctx, char **envfrom)
     ret = caml_callback3(*closure, ctx_val, envfrom_val, args_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_envrcpt(SMFICTX *ctx, char **envrcpt)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal5(ret, ctx_val, envrcpt_val, args_val, args_tail);
+    value ret, ctx_val, envrcpt_val, args_val, args_tail;
     char **p;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = envrcpt_val = args_val = args_tail = Val_none;
+
+    Begin_roots5(ret, ctx_val, envrcpt_val, args_val, args_tail);
+
     /* First element: envrcpt */
     envrcpt_val = caml_copy_string(*envrcpt);
 
@@ -257,20 +289,27 @@ milter_envrcpt(SMFICTX *ctx, char **envrcpt)
     ret = caml_callback3(*closure, ctx_val, envrcpt_val, args_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_header(SMFICTX *ctx, char *headerf, char *headerv)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal4(ret, ctx_val, headerf_val, headerv_val);
+    value ret, ctx_val, headerf_val, headerv_val;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = headerf_val = headerv_val = Val_none;
+
+    Begin_roots4(ret, ctx_val, headerf_val, headerv_val);
+
     headerf_val = caml_copy_string(headerf);
     headerv_val = caml_copy_string(headerv);
 
@@ -279,41 +318,54 @@ milter_header(SMFICTX *ctx, char *headerf, char *headerv)
     ret = caml_callback3(*closure, ctx_val, headerf_val, headerv_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_eoh(SMFICTX *ctx)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal2(ret, ctx_val);
+    value ret, ctx_val;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = Val_none;
+
+    Begin_roots2(ret, ctx_val);
 
     if (closure == NULL)
         closure = caml_named_value("milter_eoh");
     ret = caml_callback(*closure, ctx_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_body(SMFICTX *ctx, unsigned char *bodyp, size_t bodylen)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal4(ret, ctx_val, body_val, len_val);
+    value ret, ctx_val, body_val, len_val;
     static value *closure = NULL;
     intnat dims[] = { bodylen };
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = ctx_val = body_val = len_val = Val_unit;
+
+    Begin_roots4(ret, ctx_val, body_val, len_val);
+
     body_val = caml_ba_alloc(CAML_BA_UINT8 | CAML_BA_C_LAYOUT, 1, bodyp, dims);
     len_val = Val_int(bodylen);
 
@@ -322,80 +374,105 @@ milter_body(SMFICTX *ctx, unsigned char *bodyp, size_t bodylen)
     ret = caml_callback3(*closure, ctx_val, body_val, len_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_eom(SMFICTX *ctx)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal2(ret, ctx_val);
+    value ret, ctx_val;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = Val_none;
+
+    Begin_roots2(ret, ctx_val);
 
     if (closure == NULL)
         closure = caml_named_value("milter_eom");
     ret = caml_callback(*closure, ctx_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_abort(SMFICTX *ctx)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal2(ret, ctx_val);
+    value ret, ctx_val;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = Val_none;
+
+    Begin_roots2(ret, ctx_val);
 
     if (closure == NULL)
         closure = caml_named_value("milter_abort");
     ret = caml_callback(*closure, ctx_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_close(SMFICTX *ctx)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal2(ret, ctx_val);
+    value ret, ctx_val;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = Val_none;
+
+    Begin_roots2(ret, ctx_val);
 
     if (closure == NULL)
         closure = caml_named_value("milter_close");
     ret = caml_callback(*closure, ctx_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_unknown(SMFICTX *ctx, const char *cmd)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
     CAMLlocal3(ret, ctx_val, cmd_val);
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = cmd_val = Val_none;
+
+    Begin_roots3(ret, ctx_val, cmd_val);
+
     cmd_val = caml_copy_string(cmd);
 
     if (closure == NULL)
@@ -403,28 +480,37 @@ milter_unknown(SMFICTX *ctx, const char *cmd)
     ret = caml_callback2(*closure, ctx_val, cmd_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static sfsistat
 milter_data(SMFICTX *ctx)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal2(ret, ctx_val);
+    value ret, ctx_val;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = Val_none;
+
+    Begin_roots2(ret, ctx_val);
 
     if (closure == NULL)
         closure = caml_named_value("milter_data");
     ret = caml_callback(*closure, ctx_val);
 
     s = milter_stat_table[Int_val(ret)];
+
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
 static const int milter_step_table[] = {
@@ -468,17 +554,21 @@ milter_negotiate(SMFICTX *ctx,
                  unsigned long *pf0, unsigned long *pf1,
                  unsigned long *pf2, unsigned long *pf3)
 {
-    ENTER_CALLBACK;
-    CAMLparam0();
-    CAMLlocal3(ret, ctx_val, head);
-    CAMLlocal2(actions_val, actions_tail);
-    CAMLlocal2(steps_val, steps_tail);
-    CAMLlocalN(args, 5);
+    value ret, ctx_val, head;
+    value actions_val, actions_tail;
+    value steps_val, steps_tail;
     size_t i, len;
     static value *closure = NULL;
     sfsistat s;
 
+    ENTER_CALLBACK;
+
     ctx_val = (value)ctx;
+    ret = head = actions_val = actions_tail = steps_val = steps_tail = Val_none;
+
+    Begin_roots3(ret, ctx_val, head);
+    Begin_roots2(actions_val, actions_tail);
+    Begin_roots2(steps_val, steps_tail);
 
     len = sizeof(milter_flag_table)/sizeof(milter_flag_table[0]);
     actions_tail = Val_emptylist;
@@ -527,14 +617,19 @@ milter_negotiate(SMFICTX *ctx,
     *pf3 = 0;
 
     s = milter_stat_table[Int_val(Field(ret, 0))];
+
+    End_roots();
+    End_roots();
+    End_roots();
+
     LEAVE_CALLBACK;
-    CAMLreturn(s);
+    return s;
 }
 
-static int
+int
 isnone(value opt)
 {
-    return(opt == Val_none);
+    return (opt == Val_none);
 }
 
 CAMLprim value
