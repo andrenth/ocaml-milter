@@ -921,7 +921,7 @@ caml_milter_chgfrom(value ctx_val, value mail_val, value args_val)
     int ret;
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     char *mail = String_val(mail_val);
-    char *args = String_val(args_val);
+    char *args = args_val == Val_none ? NULL : String_val(Some_val(args_val));
 
     ret = smfi_chgfrom(ctx, mail, args);
     if (ret == MI_FAILURE)
@@ -952,7 +952,7 @@ caml_milter_addrcpt_par(value ctx_val, value rcpt_val, value args_val)
     int ret;
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     char *rcpt = String_val(rcpt_val);
-    char *args = String_val(args_val);
+    char *args = args_val == Val_none ? NULL : String_val(Some_val(args_val));
 
     ret = smfi_addrcpt_par(ctx, rcpt, args);
     if (ret == MI_FAILURE)

@@ -134,11 +134,11 @@ external chgheader : ctx -> string -> int -> string option -> unit =
   "caml_milter_chgheader"
 external insheader : ctx -> int -> string -> string -> unit =
   "caml_milter_insheader"
-external chgfrom : ctx -> string -> string -> unit =
+external chgfrom : ctx -> string -> string option -> unit =
   "caml_milter_chgfrom"
 external addrcpt : ctx -> string -> unit =
   "caml_milter_addrcpt"
-external addrcpt_par : ctx -> string -> string -> unit =
+external addrcpt_par : ctx -> string -> string option -> unit =
   "caml_milter_addrcpt_par"
 external delrcpt : ctx -> string -> unit =
   "caml_milter_delrcpt"

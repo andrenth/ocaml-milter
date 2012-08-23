@@ -99,9 +99,9 @@ val setmlreply : ctx -> string -> string option -> string list -> unit
 val addheader : ctx -> string -> string -> unit
 val chgheader : ctx -> string -> int -> string option -> unit
 val insheader : ctx -> int -> string -> string -> unit
-val chgfrom : ctx -> string -> string -> unit
+val chgfrom : ctx -> string -> string option -> unit
 val addrcpt : ctx -> string -> unit
-val addrcpt_par : ctx -> string -> string -> unit
+val addrcpt_par : ctx -> string -> string option -> unit
 val delrcpt : ctx -> string -> unit
 val replacebody : ctx -> bytes -> unit
 val progress : ctx -> unit
