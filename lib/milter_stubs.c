@@ -22,17 +22,15 @@
 #define Some_val(v)    Field(v, 0)
 #define Val_none       Val_int(0)
 
-#define ENTER_CALLBACK                 \
-    do {                               \
-        caml_c_thread_register();      \
-        caml_acquire_runtime_system(); \
-    } while (0)
+#define ENTER_CALLBACK                                                     \
+    int __caml_milter_c_thread_registered = caml_c_thread_register();      \
+    if (__caml_milter_c_thread_registered) caml_acquire_runtime_system();
 
-#define LEAVE_CALLBACK                 \
-    do {                               \
-        caml_release_runtime_system(); \
-        caml_c_thread_unregister();    \
-    } while (0)
+#define LEAVE_CALLBACK                         \
+    if (__caml_milter_c_thread_registered) {   \
+        caml_release_runtime_system();         \
+        caml_c_thread_unregister();            \
+    }
 
 static CAMLprim value
 Val_some(value v)
