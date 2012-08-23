@@ -654,7 +654,9 @@ caml_milter_register(value desc_val)
     desc.xxfi_data      = isnone(Field(desc_val, 14)) ? NULL : milter_data;
     desc.xxfi_negotiate = isnone(Field(desc_val, 15)) ? NULL : milter_negotiate;
 
+    caml_release_runtime_system();
     ret = smfi_register(desc);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.register");
 
@@ -667,7 +669,9 @@ caml_milter_setconn(value conn_value)
     CAMLparam1(conn_value);
     int ret;
 
+    caml_release_runtime_system();
     ret = smfi_setconn(String_val(conn_value));
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.setconn");
 
@@ -707,6 +711,7 @@ CAMLprim value
 caml_milter_stop(value unit)
 {
     CAMLparam1(unit);
+    caml_release_runtime_system();
     smfi_stop();
     caml_acquire_runtime_system();
     CAMLreturn(Val_int(0)); /* SMFIS_CONTINUE */
@@ -782,9 +787,7 @@ caml_milter_unsetpriv(value ctx_val)
 {
     CAMLparam1(ctx_val);
     SMFICTX *ctx = (SMFICTX *)ctx_val;
-
     smfi_setpriv(ctx, NULL);
-
     CAMLreturn(Val_unit);
 }
 
@@ -801,7 +804,9 @@ caml_milter_setreply(value ctx_val, value rcode_val, value xcode_val,
 
     xcode = (xcode_val == Val_none) ? NULL : String_val(Some_val(xcode_val));
     msg = (msg_val == Val_none) ? NULL : String_val(Some_val(msg_val));
+    caml_release_runtime_system();
     ret = smfi_setreply(ctx, rcode, xcode, msg);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.setreply");
 
@@ -840,6 +845,7 @@ caml_milter_setmlreply(value ctx_val, value rcode_val, value xcode_val,
 
     xcode = (xcode_val == Val_none) ? NULL : String_val(Some_val(xcode_val));
 
+    caml_release_runtime_system();
     ret = smfi_setmlreply(ctx, rcode, xcode,
                           /* Fuck me */
                           msg[0],  msg[1],  msg[2],  msg[3],
@@ -850,7 +856,8 @@ caml_milter_setmlreply(value ctx_val, value rcode_val, value xcode_val,
                           msg[20], msg[21], msg[22], msg[23],
                           msg[24], msg[25], msg[26], msg[27],
                           msg[28], msg[29], msg[30], msg[31]);
-    
+    caml_acquire_runtime_system();
+
 cleanup:
     for (i = 0; i < len; i++)
         free(msg[i]);
@@ -871,7 +878,9 @@ caml_milter_addheader(value ctx_val, value headerf_val, value headerv_val)
     char *headerf = String_val(headerf_val);
     char *headerv = String_val(headerv_val);
 
+    caml_release_runtime_system();
     ret = smfi_addheader(ctx, headerf, headerv);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.addheader");
 
@@ -889,7 +898,9 @@ caml_milter_chgheader(value ctx_val,
     char *headerf = String_val(headerf_val);
     char *headerv = isnone(headerv_val) ? NULL : String_val(headerv_val);
 
+    caml_release_runtime_system();
     ret = smfi_chgheader(ctx, headerf, idx, headerv);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.chgheader");
 
@@ -907,7 +918,9 @@ caml_milter_insheader(value ctx_val, value idx_val,
     char *headerf = String_val(headerf_val);
     char *headerv = String_val(headerv_val);
 
+    caml_release_runtime_system();
     ret = smfi_insheader(ctx, idx, headerf, headerv);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.chgheader");
 
@@ -923,7 +936,9 @@ caml_milter_chgfrom(value ctx_val, value mail_val, value args_val)
     char *mail = String_val(mail_val);
     char *args = args_val == Val_none ? NULL : String_val(Some_val(args_val));
 
+    caml_release_runtime_system();
     ret = smfi_chgfrom(ctx, mail, args);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.chgfrom");
 
@@ -938,7 +953,9 @@ caml_milter_addrcpt(value ctx_val, value rcpt_val)
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     char *rcpt = String_val(rcpt_val);
 
+    caml_release_runtime_system();
     ret = smfi_addrcpt(ctx, rcpt);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.addrcpt");
 
@@ -954,7 +971,9 @@ caml_milter_addrcpt_par(value ctx_val, value rcpt_val, value args_val)
     char *rcpt = String_val(rcpt_val);
     char *args = args_val == Val_none ? NULL : String_val(Some_val(args_val));
 
+    caml_release_runtime_system();
     ret = smfi_addrcpt_par(ctx, rcpt, args);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.addrcpt_par");
 
@@ -969,7 +988,9 @@ caml_milter_delrcpt(value ctx_val, value rcpt_val)
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     char *rcpt = String_val(rcpt_val);
 
+    caml_release_runtime_system();
     ret = smfi_delrcpt(ctx, rcpt);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.delrcpt");
 
@@ -985,7 +1006,9 @@ caml_milter_replacebody(value ctx_val, value body_val)
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     unsigned char *body = Caml_ba_data_val(body_val);
 
+    caml_release_runtime_system();
     ret = smfi_replacebody(ctx, body, len);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.replacebody");
 
@@ -999,7 +1022,9 @@ caml_milter_progress(value ctx_val)
     int ret;
     SMFICTX *ctx = (SMFICTX *)ctx_val;
 
+    caml_release_runtime_system();
     ret = smfi_progress(ctx);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.progress");
 
@@ -1014,7 +1039,9 @@ caml_milter_quarantine(value ctx_val, value reason_val)
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     char *reason = String_val(reason_val);
 
+    caml_release_runtime_system();
     ret = smfi_quarantine(ctx, reason);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.quarantine");
 
@@ -1057,7 +1084,9 @@ caml_milter_setsymlist(value ctx_val, value stage_val, value macros_val)
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     char *macros = String_val(macros_val);
 
+    caml_release_runtime_system();
     ret = smfi_setsymlist(ctx, stage, macros);
+    caml_acquire_runtime_system();
     if (ret == MI_FAILURE)
         milter_error("Milter.setsymlist");
 
