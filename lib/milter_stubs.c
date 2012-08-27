@@ -750,20 +750,24 @@ caml_milter_getsymval(value ctx_val, value sym_val)
     CAMLreturn(res);
 }
 
+struct milter_priv {
+    value v;
+};
+
 CAMLprim value
 caml_milter_getpriv(value ctx_val)
 {
     CAMLparam1(ctx_val);
     CAMLlocal1(res);
-    void *data;
     SMFICTX *ctx = (SMFICTX *)ctx_val;
+    struct milter_priv *p;
 
-    data = smfi_getpriv(ctx);
-    if (data == NULL)
+    p = smfi_getpriv(ctx);
+    if (p == NULL)
         return Val_none;
 
     res = caml_alloc(1, 0);
-    Store_field(res, 0, (value)data);
+    Store_field(res, 0, p->v);
 
     CAMLreturn(res);
 }
@@ -774,10 +778,20 @@ caml_milter_setpriv(value ctx_val, value priv_val)
     CAMLparam2(ctx_val, priv_val);
     int ret;
     SMFICTX *ctx = (SMFICTX *)ctx_val;
+    struct milter_priv *p;
 
-    ret = smfi_setpriv(ctx, (void *)priv_val);
+    p = smfi_getpriv(ctx);
+    if (p != NULL) {
+        caml_remove_global_root(&(p->v));
+        caml_stat_free(p);
+    }
+
+    p = caml_stat_alloc(sizeof(struct milter_priv));
+    p->v = priv_val;
+    ret = smfi_setpriv(ctx, p);
     if (ret == MI_FAILURE)
         milter_error("Milter.setpriv");
+    caml_register_global_root(&(p->v));
 
     CAMLreturn(Val_unit);
 }
@@ -787,6 +801,11 @@ caml_milter_unsetpriv(value ctx_val)
 {
     CAMLparam1(ctx_val);
     SMFICTX *ctx = (SMFICTX *)ctx_val;
+    struct milter_priv *p;
+
+    p = smfi_getpriv(ctx);
+    if (p != NULL)
+        caml_stat_free(p);
     smfi_setpriv(ctx, NULL);
     CAMLreturn(Val_unit);
 }
