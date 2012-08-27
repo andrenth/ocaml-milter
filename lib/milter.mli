@@ -91,8 +91,7 @@ val main : unit -> unit
 
 val getsymval : ctx -> string -> string option
 val getpriv : ctx -> 'a option
-val setpriv : ctx -> 'a -> unit
-val unsetpriv : ctx -> unit
+val setpriv : ctx -> 'a option -> unit
 val setreply : ctx -> string -> string option -> string option -> unit
 val setmlreply : ctx -> string -> string option -> string list -> unit
 

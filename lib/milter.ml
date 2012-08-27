@@ -119,10 +119,8 @@ external getsymval : ctx -> string -> string option =
   "caml_milter_getsymval"
 external getpriv : ctx -> 'a option =
   "caml_milter_getpriv"
-external setpriv : ctx -> 'a -> unit =
+external setpriv : ctx -> 'a option -> unit =
   "caml_milter_setpriv"
-external unsetpriv : ctx -> unit =
-  "caml_milter_unsetpriv"
 external setreply : ctx -> string -> string option -> string option -> unit =
   "caml_milter_setreply"
 external setmlreply : ctx -> string -> string option -> string list -> unit =
