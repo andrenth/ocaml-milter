@@ -776,29 +776,44 @@ CAMLprim value
 caml_milter_setpriv(value ctx_val, value priv_opt)
 {
     CAMLparam2(ctx_val, priv_opt);
-    int ret;
+    CAMLlocal1(priv);
+    int ret, new_root;
     SMFICTX *ctx = (SMFICTX *)ctx_val;
     struct milter_priv *p;
 
     p = smfi_getpriv(ctx);
-    if (p != NULL) {
-        caml_remove_global_root(&(p->v));
-        caml_stat_free(p);
-    }
 
     if (priv_opt == Val_none) {
-        p = NULL;
+        if (p != NULL) {
+            caml_remove_generational_global_root(&(p->v));
+            caml_stat_free(p);
+            ret = smfi_setpriv(ctx, NULL);
+            if (ret == MI_FAILURE)
+                milter_error("Milter.setpriv");
+        }
+        CAMLreturn(Val_unit);
+    }
+
+    priv = Some_val(priv_opt);
+
+    if (p == NULL) {
+        p = caml_stat_alloc(sizeof(*p));
+        p->v = priv;
+        caml_register_generational_global_root(&(p->v));
+        new_root = 1;
     } else {
-        p = caml_stat_alloc(sizeof(struct milter_priv));
-        p->v = Some_val(priv_opt);
+        caml_modify_generational_global_root(&(p->v), priv);
+        new_root = 0;
     }
 
     ret = smfi_setpriv(ctx, p);
-    if (ret == MI_FAILURE)
+    if (ret == MI_FAILURE) {
+        if (new_root) {
+            caml_stat_free(p);
+            caml_remove_generational_global_root(&(p->v));
+        }
         milter_error("Milter.setpriv");
-
-    if (p != NULL)
-        caml_register_global_root(&(p->v));
+    }
 
     CAMLreturn(Val_unit);
 }
