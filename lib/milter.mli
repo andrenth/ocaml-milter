@@ -55,7 +55,7 @@ type step
   | MDS_256K
   | MDS_1M
 
-type descriptor =
+type filter =
   { name      : string
   ; version   : int
   ; flags     : flag list
@@ -81,7 +81,7 @@ type bytes =
 exception Milter_error of string
 
 val opensocket : bool -> unit
-val register : descriptor -> unit
+val register : filter -> unit
 val setconn : string -> unit
 val settimeout : int -> unit
 val setbacklog : int -> unit
@@ -109,3 +109,5 @@ val version : unit -> int * int * int
 val setsymlist : ctx -> stage -> string -> unit
 
 val version_code : int
+
+val empty : filter

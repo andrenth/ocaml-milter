@@ -57,7 +57,7 @@ type step
   | MDS_256K
   | MDS_1M
 
-type descriptor =
+type filter =
   { name      : string
   ; version   : int
   ; flags     : flag list
@@ -86,7 +86,7 @@ let _ = Callback.register_exception "Milter.Milter_error" (Milter_error "")
 
 external opensocket : bool -> unit = "caml_milter_opensocket"
 
-external milter_register : descriptor -> unit = "caml_milter_register"
+external milter_register : filter -> unit = "caml_milter_register"
 
 let maybe f = function
   | None -> ()
@@ -155,3 +155,22 @@ external milter_version_code : unit -> int = "caml_milter_version_code"
 
 let version_code =
   milter_version_code ()
+
+let empty =
+  { name      = ""
+  ; version   = version_code
+  ; flags     = []
+  ; connect   = None
+  ; helo      = None
+  ; envfrom   = None
+  ; envrcpt   = None
+  ; header    = None
+  ; eoh       = None
+  ; body      = None
+  ; eom       = None
+  ; abort     = None
+  ; close     = None
+  ; unknown   = None
+  ; data      = None
+  ; negotiate = None
+  }
