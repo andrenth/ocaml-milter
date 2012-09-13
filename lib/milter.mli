@@ -11,8 +11,8 @@
 *)
 
 
+(** A milter context. *)
 type ctx
-  (** A milter context. *)
 
 (** The return status of milter callbacks. *)
 type stat
@@ -80,63 +80,63 @@ type bytes =
 
 (** The type of filters. *)
 type filter =
-  { name      : string
+  { name : string
       (** The name of the filter. *)
-  ; version   : int
+  ; version : int
       (** The libmilter version. Must be set to {!version_code}. *)
-  ; flags     : flag list
+  ; flags : flag list
       (** The list of flags corresponding to the actions performed by the
           filter. *)
-  ; connect   : (ctx -> string option -> Unix.sockaddr option -> stat) option
+  ; connect : (ctx -> string option -> Unix.sockaddr option -> stat) option
       (** Called at the start of each SMTP connection. Arguments: milter
-          context, host name of the connection remote address (equals [None]
-          if the reverse DNS lookup fails) and connection remote address
-          (equals [None] if the address type is not supported or if the
-          connection is made via [stdin]). *)
-  ; helo      : (ctx -> string -> stat) option
+          context, client host name (equals [None] if the reverse DNS lookup
+          fails for the client address) and client address (equals [None] if
+          the address type is not supported or if the connection is made via
+          [stdin]). *)
+  ; helo : (ctx -> string -> stat) option
       (** Called when the client sends a HELO/EHLO command. May be called zero
           or more times per connection. Arguments: milter context and HELO/EHLO
           string. *)
-  ; envfrom   : (ctx -> string -> string list -> stat) option
+  ; envfrom : (ctx -> string -> string list -> stat) option
       (** Called when the client sends the MAIL FROM command. Arguments:
           milter context, sender address and ESMTP arguments. *)
-  ; envrcpt   : (ctx -> string -> string list -> stat) option
+  ; envrcpt : (ctx -> string -> string list -> stat) option
       (** Called once per RCPT TO command. Arguments: milter context,
           recipient address and ESMTP arguments. *)
-  ; header    : (ctx -> string -> string -> stat) option
+  ; header : (ctx -> string -> string -> stat) option
       (** Called once for each message header. Arguments: milter context,
           header name and header value. *)
-  ; eoh       : (ctx -> stat) option
+  ; eoh : (ctx -> stat) option
       (** Called after all message headers have been processed. Arguments:
           milter context. *)
-  ; body      : (ctx -> bytes -> int -> stat) option
+  ; body : (ctx -> bytes -> int -> stat) option
       (** Called zero or more times between [eoh] and [eom] to handle a
-          piece of the message body. Arguments: milter context, piece of
-          message body and its length. *)
-  ; eom       : (ctx -> stat) option
+          piece of the message body. Arguments: milter context, the current
+          piece of the message body and its length. *)
+  ; eom : (ctx -> stat) option
       (** Called once after all calls to [body] are made. Arguments: milter
           context. *)
-  ; abort     : (ctx -> stat) option
+  ; abort : (ctx -> stat) option
       (** Called when the current message is aborted. Must reclaim all
           per-message resources. The [abort] and [eom] callbacks are
           mutually exclusive. Arguments: milter context. *)
-  ; close     : (ctx -> stat) option
+  ; close : (ctx -> stat) option
       (** Called when the current connection is being closed. Not necessarily
           called after all other callbacks. The [close] callback is called
           even if the message was aborted. Must reclaim all per-connection
           resources. Arguments: milter context. *)
-  ; unknown   : (ctx -> string -> stat) option
+  ; unknown : (ctx -> string -> stat) option
       (** Called when the client sends an unknown or unimplemented SMTP
           command. Arguments: milter context and SMTP command. *)
-  ; data      : (ctx -> stat) option
+  ; data : (ctx -> stat) option
       (** Called when the client uses the DATA command. Arguments: milter
           context. *)
-  ; negotiate : (ctx -> flag list -> step list
-                  -> stat * flag list * step list) option
+  ; negotiate : (ctx -> flag list -> step list -> stat * flag list * step list)
+                option
       (** Called to dynamically determine and request operations and actions
           during filter startup. Arguments: milter context, list of {!flag}s
           offered by the MTA and list of {!step}s offered by the MTA. Must
-          return a {!stat} and the lists of flags and steps that
+          return a tuple with a {!stat} and the lists of flags and steps that
           the filter requires. *)
   }
 
@@ -166,7 +166,7 @@ val setconn : string -> unit
 
 val settimeout : int -> unit
   (** Sets the filter's I/O timeout value in seconds. Setting the timeout to
-      [0] means "don't wait", not "wait forever". Must be called before
+      [0] means "do not wait", not "wait forever". Must be called before
       {!main}. *)
 
 val setbacklog : int -> unit
@@ -223,7 +223,7 @@ val insheader : ctx -> int -> string -> string -> unit
       called from the [eom] callback. *)
 
 val chgfrom : ctx -> string -> string option -> unit
-  (** [chgfrom ctx from args] change the envelope sender (MAIL FROM) address
+  (** [chgfrom ctx from args] changes the envelope sender (MAIL FROM) address
       of the current message to [from] with optional ESMTP arguments [args].
       Can only be called from the [eom] callback. *)
 
@@ -232,7 +232,7 @@ val addrcpt : ctx -> string -> unit
       [eom] callback. *)
 
 val addrcpt_par : ctx -> string -> string option -> unit
-  (** Adds a recipient for the current message, possible including ESMTP
+  (** Adds a recipient for the current message, possibly including ESMTP
       parameters. Can only be called from the [eom] callback. *)
 
 val delrcpt : ctx -> string -> unit
@@ -264,5 +264,5 @@ val version_code : int
   (** The libmilter (compile time) version. *)
 
 val empty : filter
-  (** A default filter with the name set to an empty string, [version] set to
-      {!version_code} and all callbacks set to [None]. *)
+  (** A default filter with [name] set to an empty string, [version] set to
+      {!version_code} and all callback fields set to [None]. *)
