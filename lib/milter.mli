@@ -157,9 +157,9 @@ val setconn : string -> unit
       be carried. The socket must be specified as a string following the
       formats below.
 
-      - {unix|local}:/path/to/file -- A named pipe.
-      - inet:port@{hostname|ip-address} -- An IPV4 socket.
-      - inet6:port@{hostname|ip-address} -- An IPV6 socket.
+      - [{unix|local}:/path/to/file] -- A named pipe.
+      - [inet:port@{hostname|ip-address}] -- An IPV4 socket.
+      - [inet6:port@{hostname|ip-address}] -- An IPV6 socket.
 
       Must be called once before {!main}. *)
 
