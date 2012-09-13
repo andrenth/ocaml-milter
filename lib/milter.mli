@@ -144,12 +144,13 @@ exception Milter_error of string
   (** The exception raised by functions in this module in case of error. *)
 
 val opensocket : bool -> unit
-  (** Try to create the milter interface socket specified by {!setconn}. If the
-      boolean argument is [true] any existing UNIX sockets will be removed
-      before trying to create a new one. Must be called before {!main}. *)
+  (** Tries to create the milter interface socket specified by {!setconn}.
+      If the boolean argument is [true] any existing UNIX sockets will be
+      removed before trying to create a new one. Must be called before
+      {!main}. *)
 
 val register : filter -> unit
-  (** Register a filter. Only one filter may be created per process. Must be
+  (** Registers a filter. Only one filter may be created per process. Must be
       called before {!main}. *)
 
 val setconn : string -> unit
@@ -164,36 +165,36 @@ val setconn : string -> unit
       Must be called once before {!main}. *)
 
 val settimeout : int -> unit
-  (** Set the filter's I/O timeout value in seconds. Setting the timeout to
+  (** Sets the filter's I/O timeout value in seconds. Setting the timeout to
       [0] means "don't wait", not "wait forever". Must be called before
       {!main}. *)
 
 val setbacklog : int -> unit
-  (** Set the filter's [listen(2)] backlog value. Must be called before
+  (** Sets the filter's [listen(2)] backlog value. Must be called before
       {!main}. *)
 
 val setdbg : int -> unit
-  (** Set the debug level for the milter library. Useful values are in the
+  (** Sets the debug level for the milter library. Useful values are in the
       [0-6] range, with [0] meaning no debug messages and [6] being the
       most verbose level. *)
 
 val stop : unit -> unit
-  (** Shutdown the filter. *)
+  (** Shuts down the filter. *)
 
 val main : unit -> unit
-  (** Hand control to libmilter's event loop. This function only returns
+  (** Hands control to libmilter's event loop. This function only returns
       if {!stop} is called from one of the callbacks defined in {!register}
       of if an error occurs. *)
 
 val getsymval : ctx -> string -> string option
-  (** Get the value of a milter macro. The availability of macros depends on
+  (** Gets the value of a milter macro. The availability of macros depends on
       each specific MTA. *)
 
 val getpriv : ctx -> 'a option
-  (** Get the connection-specific private data for this connection. *)
+  (** Gets the connection-specific private data for this connection. *)
 
 val setpriv : ctx -> 'a option -> unit
-  (** Set the private data for this connection. *)
+  (** Sets the private data for this connection. *)
 
 val setreply : ctx -> string -> string option -> string option -> unit
   (** [setreply ctx rcode xcode message] sets the default SMTP error reply
