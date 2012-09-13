@@ -57,17 +57,20 @@ type step
   | MDS_256K
   | MDS_1M
 
+type bytes =
+  (char, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
+
 type filter =
   { name      : string
   ; version   : int
   ; flags     : flag list
   ; connect   : (ctx -> string option -> Unix.sockaddr option -> stat) option
-  ; helo      : (ctx -> string option -> stat) option
+  ; helo      : (ctx -> string -> stat) option
   ; envfrom   : (ctx -> string -> string list -> stat) option
   ; envrcpt   : (ctx -> string -> string list -> stat) option
   ; header    : (ctx -> string -> string -> stat) option
   ; eoh       : (ctx -> stat) option
-  ; body      : (ctx -> string -> int -> stat) option
+  ; body      : (ctx -> bytes -> int -> stat) option
   ; eom       : (ctx -> stat) option
   ; abort     : (ctx -> stat) option
   ; close     : (ctx -> stat) option
@@ -76,9 +79,6 @@ type filter =
   ; negotiate : (ctx -> flag list -> step list
                   -> stat * flag list * step list) option
   }
-
-type bytes =
-  (char, Bigarray.int8_unsigned_elt, Bigarray.c_layout) Bigarray.Array1.t
 
 exception Milter_error of string
 

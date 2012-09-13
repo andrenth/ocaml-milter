@@ -197,12 +197,12 @@ milter_helo(SMFICTX *ctx, char *helo)
 
     ret = Val_none;
     ctx_val = (value)ctx;
-    helo_val = Val_none;
+    helo_val = caml_copy_string("");
 
     Begin_roots3(ret, ctx_val, helo_val);
 
     if (helo != NULL)
-        helo_val = Val_some(caml_copy_string(helo));
+        helo_val = caml_copy_string(helo);
 
     if (closure == NULL)
         closure = caml_named_value("milter_helo");

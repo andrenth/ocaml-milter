@@ -5,7 +5,10 @@ Synopsis:    OCaml libmilter bindings
 Authors:     Andre Nathan
 License:     BSD3
 
-Library milter
+BuildTools:  ocamlbuild
+Plugins:     META (0.3)
+
+Library "milter"
   Path:            lib
   BuildTools:      ocamlbuild
   CompiledObject:  best
@@ -14,3 +17,10 @@ Library milter
   CSources:        milter_stubs.c
   CCLib:           -L/usr/lib/libmilter -lmilter
   CCOpt:           -Wall -Werror
+
+Document "milter"
+  Title:                Milter documentation
+  Type:                 ocamlbuild (0.3)
+  BuildTools+:          ocamldoc
+  XOCamlbuildPath:      lib
+  XOCamlbuildLibraries: milter

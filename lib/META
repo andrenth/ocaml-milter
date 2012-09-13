@@ -1,7 +1,12 @@
-name = "milter"
+# OASIS_START
+# DO NOT EDIT (digest: 90909c93c849551e64d71643d452d1d4)
 version = "0.1.0"
-description = "OCaml bindings to libmilter"
-requires = "bigarray"
+description = "OCaml libmilter bindings"
+requires = "threads"
 archive(byte) = "milter.cma"
+archive(byte, plugin) = "milter.cma"
 archive(native) = "milter.cmxa"
-linkopts = ""
+archive(native, plugin) = "milter.cmxs"
+exists_if = "milter.cma"
+# OASIS_STOP
+
