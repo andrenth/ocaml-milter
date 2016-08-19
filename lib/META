@@ -1,6 +1,6 @@
 # OASIS_START
-# DO NOT EDIT (digest: 53e83a645e788b528ee8c28e66a792fa)
-version = "1.0.1"
+# DO NOT EDIT (digest: 7835d4a40df4ca314f595e0719bd3912)
+version = "1.0.2"
 description = "OCaml libmilter bindings"
 requires = "threads"
 archive(byte) = "milter.cma"
