@@ -460,7 +460,7 @@ milter_close(SMFICTX *ctx)
 static sfsistat
 milter_unknown(SMFICTX *ctx, const char *cmd)
 {
-    CAMLlocal3(ret, ctx_val, cmd_val);
+    value ret, ctx_val, cmd_val;
     static value *closure = NULL;
     sfsistat s;
 
