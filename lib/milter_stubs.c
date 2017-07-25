@@ -901,10 +901,10 @@ caml_milter_setmlreply(value ctx_val, value rcode_val, value xcode_val,
                           msg[28], msg[29], msg[30], msg[31]);
     caml_acquire_runtime_system();
 
-cleanup:
-    free(rcode);
     if (xcode != NULL)
         free(xcode);
+cleanup:
+    free(rcode);
     for (i = 0; i < len; i++)
         free(msg[i]);
     free(msg);
